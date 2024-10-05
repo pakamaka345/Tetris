@@ -15,7 +15,7 @@ int main()
 
 	if (std::cin.get())
 	{
-		Game game(20, 10);
+		Game game(10, 20);
 		game.run();
 	}
 }

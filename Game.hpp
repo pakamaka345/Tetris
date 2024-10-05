@@ -5,12 +5,12 @@
 #include "CommandIdentifier.hpp"
 #include <map>
 #include <functional>
+#include <memory>
 
 class Game : public Scene
 {
 public:
-	Game(int boardHeight, int boardWidth);
-	~Game();
+	Game(int boardWidth, int boardHeight);
 	void run() override;
 
 protected:
@@ -28,10 +28,10 @@ private:
 	char getInput();
 
 private:
-	Board* board;
-	Tetromino* currentTetromino;
-	Tetromino* nextTetromino;
-	
+	std::unique_ptr<Board> board;
+	std::unique_ptr<Tetromino> currentTetromino;
+	std::unique_ptr<Tetromino> nextTetromino;
+
 	int currentX;
 	int currentY;
 

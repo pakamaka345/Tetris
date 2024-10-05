@@ -132,7 +132,7 @@ void Tetromino::initShape()
 	}
 }
 
-Tetromino* Tetromino::generateRandomTetromino()
+std::unique_ptr<Tetromino> Tetromino::generateRandomTetromino()
 {
 	std::random_device rd;
 	std::mt19937 gen(rd());
@@ -140,5 +140,5 @@ Tetromino* Tetromino::generateRandomTetromino()
 
 	TetrominoType::Type type = static_cast<TetrominoType::Type>(dist(gen));
 
-	return new Tetromino(type);
+	return std::make_unique<Tetromino>(type);
 }

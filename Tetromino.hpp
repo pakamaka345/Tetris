@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <memory>
 
 namespace TetrominoType
 {
@@ -31,7 +32,7 @@ public:
 	void rotateClockwise();
 	void rotateCounterClockwise();
 
-	static Tetromino* generateRandomTetromino();
+	static std::unique_ptr<Tetromino> generateRandomTetromino();
 
 private:
 	TetrominoType::Type type;

@@ -9,25 +9,17 @@
 #include <unistd.h>
 #endif
 
-Game::Game(int boardHeight, int boardWidth)
+Game::Game(int boardWidth, int boardHeight)
 	: Scene("Tetris")
-	, board(new Board(boardWidth, boardHeight))
+	, board(std::make_unique<Board>(boardWidth, boardHeight))
+	, currentTetromino(Tetromino::generateRandomTetromino())
+	, nextTetromino(Tetromino::generateRandomTetromino())
 	, score(0)
 	, currentX(0)
 	, currentY(0)
 	, isGameOver(false)
 {
-	currentTetromino = Tetromino::generateRandomTetromino();
-	nextTetromino = Tetromino::generateRandomTetromino();
-
 	initCommands();
-}
-
-Game::~Game()
-{
-	delete board;
-	delete currentTetromino;
-	delete nextTetromino;
 }
 
 void Game::run()
@@ -85,8 +77,7 @@ void Game::update()
 		board->placeTetromino(*currentTetromino, currentX, currentY);
 		board->clearAllRows(score);
 
-		delete currentTetromino;
-		currentTetromino = nextTetromino;
+		currentTetromino = std::move(nextTetromino);
 		nextTetromino = Tetromino::generateRandomTetromino();
 
 		spawnTetromino();
@@ -125,7 +116,7 @@ void Game::moveTetromino(int dx, int dy)
 
 void Game::rotateTetromino(bool clockwise)
 {
-	Tetromino* rotatedTetromino = new Tetromino(*currentTetromino);
+	auto rotatedTetromino = std::make_unique<Tetromino>(*currentTetromino);
 
 	if (clockwise)
 		rotatedTetromino->rotateClockwise();
@@ -136,12 +127,9 @@ void Game::rotateTetromino(bool clockwise)
 
 	if (board->canPlaceTetromino(*rotatedTetromino, currentX, currentY))
 	{
-		delete currentTetromino;
-		currentTetromino = rotatedTetromino;
+		currentTetromino = std::move(rotatedTetromino);
 		board->placeTetromino(*currentTetromino, currentX, currentY);
 	}
-	else 
-		delete rotatedTetromino;
 }
 
 void Game::dropTetromino()
